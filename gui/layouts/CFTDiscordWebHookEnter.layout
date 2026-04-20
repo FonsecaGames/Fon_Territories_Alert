@@ -1,0 +1,240 @@
+PanelWidgetClass root {
+ visible 1
+ ignorepointer 0
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass PanelWidget0 {
+   ignorepointer 1
+   color 0.2 0.2 0.2 1
+   size 0.5 0.3
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+   {
+    PanelWidgetClass PanelWidget1 {
+     ignorepointer 1
+     color 0.118 0.118 0.118 1
+     position 0 0
+     size 1 0.2
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style rover_sim_colorable
+     {
+      TextWidgetClass TextWidget0 {
+       ignorepointer 1
+       position 0 0
+       size 1 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style Bold
+       text "Discord Alert"
+       "exact text" 1
+       "text halign" center
+       "text valign" center
+      }
+      ImageWidgetClass ImageWidget0 {
+       ignorepointer 1
+       position 0.01 0.12
+       size 0.09 0.8
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+      }
+      ButtonWidgetClass btnClose {
+       color 0.384 0.082 0.11 1
+       position 0.94 0.22
+       size 0.05 0.5
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style Colorable
+       {
+        ImageWidgetClass btnCloseImg {
+         ignorepointer 1
+         position 0 0
+         size 1 1
+         halign right_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         image0 "set:dayz_gui image:Close"
+         mode blend
+         "src alpha" 1
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass PanelWidget2 {
+     ignorepointer 1
+     position 0.01 0.22
+     size 0.98 0.6
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     {
+      PanelWidgetClass PanelWidget3 {
+       ignorepointer 1
+       color 0.157 0.157 0.157 1
+       position 0 0
+       size 1 0.48
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style rover_sim_colorable
+       {
+        TextWidgetClass TextWidget1 {
+         ignorepointer 1
+         position 0 0
+         size 1 0.3
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style Bold
+         text "Base Name"
+         "exact text" 1
+         "text valign" center
+        }
+        EditBoxWidgetClass edtBaseName {
+         disabled 0
+         position 0.01 0.35
+         size 0.98 0.6
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style ServerBrowser
+         text "Teste"
+         "limit visible" 0
+         "exact text" 1
+         font "gui/fonts/sdf_metronbook24"
+         "disabled text color" 0.475 0.475 0.475 1
+        }
+       }
+      }
+      PanelWidgetClass PanelWidget4 {
+       ignorepointer 1
+       color 0.157 0.157 0.157 1
+       position 0 0.52
+       size 1 0.48
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style rover_sim_colorable
+       {
+        TextWidgetClass TextWidget2 {
+         ignorepointer 1
+         position 0 0
+         size 1 0.3
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style Bold
+         text "Webhook"
+         "exact text" 1
+         "text valign" center
+        }
+        EditBoxWidgetClass edtWebhook {
+         disabled 0
+         position 0.01 0.35
+         size 0.98 0.6
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         text "https://discordapp.com/api/webhooks/1494680138565156874/TGoLiljhKSyxdnDqfFjTT3jsFAEMGXcjT-3nw8YQE64RtIaUbekoYY0TYCaOiSD-NmR1"
+         "exact text" 1
+         font "gui/fonts/sdf_metronbook24"
+         "disabled text color" 0.482 0.482 0.482 1
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass PanelWidget5 {
+     ignorepointer 1
+     position 0.01 0.83
+     size 0.98 0.16
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     {
+      ButtonWidgetClass btnSave {
+       color 0.153 0.153 0.153 1
+       position 0.75 0
+       size 0.25 1
+       halign left_ref
+       valign bottom_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultButton
+       text "SAVE"
+       text_proportion 0.6
+       font "gui/fonts/sdf_MetronBook24"
+       "disabled text color" 0 0 0 0.902
+       "text sharpness" 1.3
+       switch normal
+      }
+      ButtonWidgetClass btnReset {
+       disabled 0
+       color 0.153 0.153 0.153 1
+       position 0.49 0
+       size 0.25 1
+       halign left_ref
+       valign bottom_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultButton
+       text "RESET"
+       text_proportion 0.6
+       font "gui/fonts/sdf_MetronBook24"
+       "disabled text color" 0 0 0 0.902
+       "text sharpness" 1.3
+       switch normal
+      }
+      TextWidgetClass txtError {
+       visible 1
+       ignorepointer 1
+       color 1 0 0 1
+       position 0 0
+       size 0.45 1
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       text "Error Message"
+       "exact text" 1
+       "text valign" center
+      }
+     }
+    }
+   }
+  }
+ }
+}
