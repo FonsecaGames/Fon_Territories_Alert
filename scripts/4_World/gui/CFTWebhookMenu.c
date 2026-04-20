@@ -90,7 +90,7 @@ class CFTWebhookMenu : UIScriptedMenu
         }
         else
         {
-            m_Flag.AddWebhook(baseName, webhook)
+            m_Flag.AddWebhook(baseName, webhook);
             string error = m_Flag.GetTerritoryWebhook().GetError();
             if (error == string.Empty)
             {

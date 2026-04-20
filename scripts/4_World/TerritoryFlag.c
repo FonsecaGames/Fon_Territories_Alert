@@ -2,6 +2,8 @@ modded class TerritoryFlag extends BaseBuildingBase
 {
     protected bool m_CanAddWebhook = true;
     protected ref CFTWebhook m_TWebhook = new CFTWebhook;
+
+    static int m_LastObjectsTerritory = 0;
     
     void TerritoryFlag()
     {
@@ -98,6 +100,22 @@ modded class TerritoryFlag extends BaseBuildingBase
         }
     }
 
+    override void EEInit()
+    {
+        super.EEInit();
+
+        if (GetGame().IsServer())
+        {
+            SetBaseBuildingInTerritory();
+        }
+    }
+
+    override void OnCEUpdate()
+    {
+        super.OnCEUpdate();
+        SetBaseBuildingInTerritory();
+    }
+
     // =====================================================
     // RPC HANDLER
     // =====================================================
@@ -176,5 +194,39 @@ modded class TerritoryFlag extends BaseBuildingBase
     private void InternalRemoveWebhook()
     {
         m_CanAddWebhook = m_TWebhook.RemoveWebhook();
+    }
+
+    private void SetBaseBuildingInTerritory()
+    {
+        if (GetGame().IsClient())
+            return;
+
+        int curTime = GetGame().GetTime();
+     
+        if (m_LastObjectsTerritory > curTime)
+            return;
+        
+        m_LastObjectsTerritory = curTime + 5000;
+
+        array<Object> objects = new array<Object>;
+        array<CargoBase> proxyCargos = new array<CargoBase>;
+
+        GetGame().GetObjectsAtPosition(GetPosition(), GameConstants.REFRESHER_RADIUS, objects, proxyCargos);
+
+        BaseBuildingBase theBase;
+        for (int i = 0; i < objects.Count(); i++)
+        {
+            if (Class.CastTo(theBase, objects.Get(i)))
+            {
+                theBase.SetTerritory(this);
+            }
+            #ifdef CodeLock
+            CodeLock theLock;
+            if (Class.CastTo(theLock, objects.Get(i)))
+            {
+                theLock.SetTerritory(this);
+            }
+            #endif
+        }
     }
 }
