@@ -81,35 +81,6 @@ Alerts are sent as Discord embeds using REST POST requests to the configured web
 - Thumbnail: alert icon
 - Description: territory name + event details
 
-## Development
-
-### Project structure
-
-- scripts/3_Game: shared logic, Discord payload builder, webhook sender, config model
-- scripts/4_World: gameplay hooks, actions, UI plugin/menu, territory/object linkage
-- scripts/5_Mission: server config load/save bootstrap
-- tools: local development scripts (build, run, log monitor)
-
-### Log monitor script
-
-A Python helper is included to monitor rotating DayZ logs and auto-switch to the newest file.
-
-Run:
-
-```bash
-python tools/monitor_dayz_log.py /path/to/log/folder
-```
-
-File pattern watched:
-
-- script_YYYY-MM-DD_HH-MM-SS.log
-
-Behavior:
-
-- Tails the current newest file
-- Clears the terminal when a newer log file appears
-- Continues printing only the newest file contents
-
 ## Known Notes
 
 - Webhook sending is server-side only.
@@ -118,9 +89,9 @@ Behavior:
 
 ## Credits
 
-- Author: Fonseca
+- Author: [Fonseca](https://steamcommunity.com/profiles/76561198172055119/)
 - Mod: Territories Alert
 
-## License
+## Repack
 
-See LICENSE.txt.
+I higly recommend don't repack this mod, any future update/fix will not be covered and I'll not provide support. You are allowed to repack since you give me the credits and mark my steam user [Fonseca](https://steamcommunity.com/profiles/76561198172055119/) and this mod as original. This follow the Mozilla Public License Version 2.0.
