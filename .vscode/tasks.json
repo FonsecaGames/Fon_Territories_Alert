@@ -2,15 +2,12 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "LogClient",
+      "label": "LogServer",
       "type": "shell",
-      "command": "tools\\logsClient.bat",
+      "command": "python",
+      "args": ["tools/monitor_dayz_log.py", "../../DayZServer_Test/prof_Bunker"],
       "options": {
-        "cwd": "${workspaceFolder}",
-        "shell": {
-          "executable": "C:\\Windows\\System32\\cmd.exe",
-          "args": ["/d", "/c"]
-        }
+        "cwd": "${workspaceFolder}"
       },
       "presentation": {
         "reveal": "always",
@@ -20,15 +17,12 @@
       }
     },
     {
-      "label": "LogServer",
+      "label": "LogClient",
       "type": "shell",
-      "command": "tools\\logsServer.bat",
+      "command": "python",
+      "args": ["tools/monitor_dayz_log.py", "../../DayZ_AppLocal"],
       "options": {
-        "cwd": "${workspaceFolder}",
-        "shell": {
-          "executable": "C:\\Windows\\System32\\cmd.exe",
-          "args": ["/d", "/c"]
-        }
+        "cwd": "${workspaceFolder}"
       },
       "presentation": {
         "reveal": "always",
