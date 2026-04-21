@@ -219,14 +219,28 @@ modded class TerritoryFlag extends BaseBuildingBase
             if (Class.CastTo(theBase, objects.Get(i)))
             {
                 theBase.SetTerritory(this);
+
+                // Check for CodeLock attached
+                #ifdef CodeLock
+                CodeLock theCodeLock = CodeLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
+                if (theCodeLock)
+                {
+                    CFTLog("Codelock add territory");
+                    theCodeLock.SetTerritory(this);
+                    continue;
+                }
+                #endif
+                
+                // Check CombinationLock
+                CombinationLock theCombLock = CombinationLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
+                if (theCombLock)
+                {
+                    CFTLog("CombinationLock add territory");
+                    theCombLock.SetTerritory(this);
+                    continue
+                }
+                
             }
-            #ifdef CodeLock
-            CodeLock theLock;
-            if (Class.CastTo(theLock, objects.Get(i)))
-            {
-                theLock.SetTerritory(this);
-            }
-            #endif
         }
     }
 }

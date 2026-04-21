@@ -32,6 +32,16 @@ modded class BaseBuildingBase extends ItemBase
 		if (m_Flag)
 			m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.DESTROY, alert, 0);
 	}
+
+	override void OnPartDismantledServer(notnull Man player, string part_name, int action_id)
+	{
+		super.OnPartDismantledServer(player, part_name, action_id);
+
+		string alert = "";
+		alert += "**Dismantled**:" + part_name + "\\n";
+		if (m_Flag)
+			m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.DISMANTLE, alert, 0);
+	}
 	
 	override void EEItemDetached(EntityAI item, string slot_name)
 	{

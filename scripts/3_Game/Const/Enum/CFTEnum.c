@@ -10,6 +10,8 @@ enum CFTRPCs {
 
 enum CFTDAMAGE {
     HIT_BY = 1,
+    DAMAGE,
     DETACH,
     DESTROY,
+    DISMANTLE
 }

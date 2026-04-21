@@ -6,19 +6,24 @@ modded class CodeLock extends ItemBase
 
     override float GetSynchronizedHealth()
     {
-        float health = super.GetSynchronizedHealth();
+		float health = super.GetSynchronizedHealth();
 
         if (m_LastHealth == 0)
             m_LastHealth = health;
 
         if (m_LastHealth != health)
         {
-            CFTLog("CodeLock health diff:" + (m_LastHealth - health)+ " health:" + health + " last:" + m_LastHealth);
+			float damage = m_LastHealth - health;
             m_LastHealth = health;
-            SendAlarm();
+
+			string alert = "";
+			alert += "**Codelock**: Damage (" + damage + ")\\n";
+			CFTLog(alert);
+            if (m_Flag)
+				m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.DAMAGE, alert, damage);
         }
 
-        return health;
+		return health;
     }
 
 
