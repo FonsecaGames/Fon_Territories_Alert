@@ -54,9 +54,12 @@ PanelWidgetClass root {
        vexactpos 0
        hexactsize 0
        vexactsize 0
-       imageTexture "{618B72D130EBF26F}mods/CFTerritoriesAlert/data/Images/DiscordEnabled.edds"
-       mode additive
+       imageTexture "CFTerritoriesAlert/data/Images/DiscordEnabled.edds"
+       mode opaque
+       "src alpha" 0
        "stretch mode" fit_w_center
+       nocache 0
+       "Transition width" 0.101
       }
       ButtonWidgetClass btnClose {
        color 0.384 0.082 0.11 1
@@ -127,7 +130,7 @@ PanelWidgetClass root {
          hexactsize 0
          vexactsize 0
          style ServerBrowser
-         text "Teste"
+         text "Test"
          "limit visible" 0
          "exact text" 1
          font "gui/fonts/sdf_metronbook24"
@@ -167,7 +170,7 @@ PanelWidgetClass root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "https://discordapp.com/api/webhooks/1494680138565156874/TGoLiljhKSyxdnDqfFjTT3jsFAEMGXcjT-3nw8YQE64RtIaUbekoYY0TYCaOiSD-NmR1"
+         text "https://discordapp.com/api/webhooks/its_only_a_invalid_url"
          "exact text" 1
          font "gui/fonts/sdf_metronbook24"
          "disabled text color" 0.482 0.482 0.482 1
