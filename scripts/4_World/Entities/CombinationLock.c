@@ -1,22 +1,21 @@
 modded class CombinationLock extends ItemBase
 {
-    private bool m_LastLocked = false;
     protected TerritoryFlag m_Flag;
 
-    override bool IsLocked()
+    override void UnlockServer( EntityAI player, EntityAI parent )
     {
-        bool isLocked = super.IsLocked();
+        super.UnlockServer(player, parent);
 
-        if (m_LastLocked && !isLocked)
-        {
-            string alert = "";
-            alert += "**Combination**: Unlocked\\n";
-            if (m_Flag)
-                m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.DISMANTLE, alert, 0);
-        }
-        m_LastLocked = isLocked;
+        FindFlag();
 
-        return isLocked;
+        PlayerBase playerSource = PlayerBase.Cast(player);
+        PlayerIdentity ident = PlayerIdentity.Cast(playerSource.GetIdentity());
+        if(m_Flag.IsTerritoryMember(ident.GetId()))
+            return;
+
+        string alert = "";
+        alert += "**Combination**: Unlocked\\n";
+        m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.UNLOCK, alert, 0);
     }
 
     bool SetTerritory(TerritoryFlag p_flag)
@@ -31,5 +30,26 @@ modded class CombinationLock extends ItemBase
 		}
 
 		return false;
+	}
+
+    void FindFlag()
+	{
+        if (!m_Flag)
+            return;
+
+		array<Object> objects = new array<Object>;
+        array<CargoBase> proxyCargos = new array<CargoBase>;
+
+        GetGame().GetObjectsAtPosition(GetPosition(), GameConstants.REFRESHER_RADIUS, objects, proxyCargos);
+
+        TerritoryFlag flag;
+        for (int i = 0; i < objects.Count(); i++)
+        {
+            if (Class.CastTo(flag, objects.Get(i)))
+            {
+                SetTerritory(flag);
+				break;
+            }
+        }
 	}
 }

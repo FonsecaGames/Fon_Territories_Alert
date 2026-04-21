@@ -106,14 +106,27 @@ modded class TerritoryFlag extends BaseBuildingBase
 
         if (GetGame().IsServer())
         {
-            SetBaseBuildingInTerritory();
+            // SetBaseBuildingInTerritory();
         }
     }
 
     override void OnCEUpdate()
     {
         super.OnCEUpdate();
-        SetBaseBuildingInTerritory();
+        // SetBaseBuildingInTerritory();
+    }
+
+    bool CheckObjectInTerritory(vector p_pos)
+    {
+        if (GetGame().IsClient())
+            return false;
+
+        if (vector.Distance(GetPosition(), p_pos) <= GameConstants.REFRESHER_RADIUS)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     // =====================================================
@@ -220,23 +233,23 @@ modded class TerritoryFlag extends BaseBuildingBase
             {
                 theBase.SetTerritory(this);
 
-                // Check for CodeLock attached
-                #ifdef CodeLock
-                CodeLock theCodeLock = CodeLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
-                if (theCodeLock)
-                {
-                    theCodeLock.SetTerritory(this);
-                    continue;
-                }
-                #endif
+                // // Check for CodeLock attached
+                // #ifdef CodeLock
+                // CodeLock theCodeLock = CodeLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
+                // if (theCodeLock)
+                // {
+                //     theCodeLock.SetTerritory(this);
+                //     continue;
+                // }
+                // #endif
                 
-                // Check CombinationLock
-                CombinationLock theCombLock = CombinationLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
-                if (theCombLock)
-                {
-                    theCombLock.SetTerritory(this);
-                    continue
-                }
+                // // Check CombinationLock
+                // CombinationLock theCombLock = CombinationLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
+                // if (theCombLock)
+                // {
+                //     theCombLock.SetTerritory(this);
+                //     continue
+                // }
                 
             }
         }

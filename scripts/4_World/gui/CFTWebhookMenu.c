@@ -39,7 +39,7 @@ class CFTWebhookMenu : UIScriptedMenu
             return layoutRoot;
         }
 
-        // RefreshUI();
+        RefreshUI();
 		return layoutRoot;
 	}
 

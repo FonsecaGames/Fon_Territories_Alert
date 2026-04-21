@@ -55,7 +55,7 @@ PanelWidgetClass root {
        hexactsize 0
        vexactsize 0
        imageTexture "CFTerritoriesAlert/data/Images/DiscordEnabled.edds"
-       mode opaque
+       mode additive
        "src alpha" 0
        "stretch mode" fit_w_center
        nocache 0
@@ -130,7 +130,7 @@ PanelWidgetClass root {
          hexactsize 0
          vexactsize 0
          style ServerBrowser
-         text "Test"
+         "next left" ""
          "limit visible" 0
          "exact text" 1
          font "gui/fonts/sdf_metronbook24"
@@ -170,7 +170,6 @@ PanelWidgetClass root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "https://discordapp.com/api/webhooks/its_only_a_invalid_url"
          "exact text" 1
          font "gui/fonts/sdf_metronbook24"
          "disabled text color" 0.482 0.482 0.482 1
@@ -235,7 +234,6 @@ PanelWidgetClass root {
        vexactpos 0
        hexactsize 0
        vexactsize 0
-       text "Error Message"
        "exact text" 1
        "text valign" center
       }

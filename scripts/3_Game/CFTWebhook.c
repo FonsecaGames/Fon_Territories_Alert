@@ -1,8 +1,8 @@
 class CFTWebhook
 {
-    static const string DISCORD_API = "/api/webhooks/";
-    static const int HISTORY_MAX = 5;
-
+    const static string DISCORD_API = "/api/webhooks/";
+    const static string DISCORD_IMG = "https://i.ibb.co/XfRvxjyt/alert-noback.png";
+    
     private string m_BaseName;
     private string m_Webhook;
     private string m_ErrorMsg = "";
@@ -82,12 +82,16 @@ class CFTWebhook
 
     void SendAlert(CFTDAMAGE p_type, string msg, float dmg = 0)
     {
+        if ((p_type == CFTDAMAGE.UNLOCK) && (GetDayZGame().GetTerritoriesAlertConfig().CanNotifyUnlock() == false))
+            return ;
+
         if (m_LockedHook)
         {
             AddDamageHistory(p_type, msg, dmg);
         }
         else
         {
+            Log(msg);
             SendRaidAlert(msg);
             LockHook();
         }
@@ -97,29 +101,35 @@ class CFTWebhook
     {
         ref CFTDiscordJSON dataJSON = new CFTDiscordJSON();
         ref CFTDiscordObject_Body dataBody = new CFTDiscordObject_Body(0xd70202);
+        ref CFTDiscordObject_Thumbnail dataThumb = new CFTDiscordObject_Thumbnail(64, 64);
 
         dataBody.SetField("title", "Territory Alarm");
 
         string desc =   "**Territory**: "+ m_BaseName + "\\n";
 		dataBody.SetField("description", desc +  p_description);
+        dataThumb.SetField("url", DISCORD_IMG);
 
         dataJSON.m_body = dataBody;
+        dataJSON.m_thumbnail = dataThumb;
 
         return SendHook(dataJSON);
     }
 
-    bool SendHello()
+    private bool SendHello()
     {
         if (!HasWebhook())
             return false;
 
         ref CFTDiscordJSON dataJSON = new CFTDiscordJSON();
         ref CFTDiscordObject_Body dataBody = new CFTDiscordObject_Body(5019904);
+        ref CFTDiscordObject_Thumbnail dataThumb = new CFTDiscordObject_Thumbnail(64, 64);
 
         dataBody.SetField("title", "Territory Alarm");
-		dataBody.SetField("description", "The webhook has been added to the territory "+ m_BaseName);
+		dataBody.SetField("description", "Added webhook to territory: "+ m_BaseName);
+        dataThumb.SetField("url", DISCORD_IMG);
 
         dataJSON.m_body = dataBody;
+        dataJSON.m_thumbnail = dataThumb;
 
         return SendHook(dataJSON);
     }
@@ -131,11 +141,14 @@ class CFTWebhook
 
         ref CFTDiscordJSON dataJSON = new CFTDiscordJSON();
         ref CFTDiscordObject_Body dataBody = new CFTDiscordObject_Body(0xd6a102);
+        ref CFTDiscordObject_Thumbnail dataThumb = new CFTDiscordObject_Thumbnail(64, 64);
 
         dataBody.SetField("title", "Territory Alarm");
-		dataBody.SetField("description", "The webhook has been removed from territory "+ m_BaseName);
+		dataBody.SetField("description", "Webhook removed from territory "+ m_BaseName);
+        dataThumb.SetField("url", DISCORD_IMG);
 
         dataJSON.m_body = dataBody;
+        dataJSON.m_thumbnail = dataThumb;
 
         return SendHook(dataJSON);
     }
@@ -172,7 +185,7 @@ class CFTWebhook
     {
         m_LockedHook = true;
         // Only Send 1 Alarm each 60Sec, but keep the total damage
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(UnlockHook, 60 * 1000);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(UnlockHook, GetDayZGame().GetTerritoriesAlertConfig().GetIntervalInOverload() * 1000);
     }
 
     private void UnlockHook()
@@ -190,9 +203,13 @@ class CFTWebhook
             m_AcumulatedDamage += dmg;
 
         m_TotalHistoryCount += 1;
-        if (m_DamageHistory.Count() > HISTORY_MAX)
+        if (m_DamageHistory.Count() >= GetDayZGame().GetTerritoriesAlertConfig().GetMaxHistoryOverload())
+        {
+            Log("[DISCARD]" + msg);
             return ;
+        }
         
+        Log(msg);
         m_DamageHistory.Insert(msg);
     }
 
@@ -207,6 +224,8 @@ class CFTWebhook
 			singleMsg += msg;
 		}
 
+        Log("Sending History...");
+
         int diffCount = m_TotalHistoryCount - m_DamageHistory.Count();
         if (diffCount)
             singleMsg += "\\nMore " + diffCount + " alerts";
@@ -216,5 +235,16 @@ class CFTWebhook
 
 		m_DamageHistory.Clear();
 		SendRaidAlert(singleMsg);
+    }
+
+    private void Log(string msg)
+    {
+        if (GetGame().IsClient())
+            return;
+
+        if (GetDayZGame().GetTerritoriesAlertConfig().CanLogAlerts())
+        {
+            CFTLog(msg);
+        }
     }
 }

@@ -33,7 +33,7 @@ class CFTDiscordJSON
 		return jsonData;
 	}
 	
-	string GetModuleJSON(ref CFTDiscordObject module)
+	string GetModuleJSON(CFTDiscordObject module)
 	{
 		if (module)
 		{

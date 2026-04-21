@@ -16,7 +16,7 @@ class CFTDiscordHook
         return true;
     }
 
-    bool SendHook(ref CFTDiscordJSON data)
+    bool SendHook(CFTDiscordJSON data)
     {
         if (m_Url == string.Empty)
             return false;
@@ -29,7 +29,7 @@ class CFTDiscordHook
         return true;
     }
 
-    private string WrapData(ref CFTDiscordJSON data)
+    private string WrapData(CFTDiscordJSON data)
 	{
 		string json = "{\"embeds\":[";
 		
