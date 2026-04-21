@@ -31,30 +31,15 @@ modded class CodeLock extends ItemBase
 	{
 		if (!p_flag)
 		{
-			CFTLog("CLSetTerritory: NoTerritory");
 			return false;
 		}
 
 		if (!m_Flag)
 		{
 			m_Flag = TerritoryFlag.Cast(p_flag);
-			CFTLog("CLSetTerritory: " + m_Flag.GetBaseName());
 			return true;
 		}
-
-		CFTLog("CLSetTerritory: Already applied");
 		return false;
-	}
-
-    bool SendAlarm()
-	{
-		if (!m_Flag)
-		{
-			return false;
-		}
-		// return m_Flag.TriggerAlarm();
-		CFTLog("CLALARM!!!!!");
-		return true;
 	}	
 }
 #endif
