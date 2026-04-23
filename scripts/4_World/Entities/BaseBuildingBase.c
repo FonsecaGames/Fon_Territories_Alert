@@ -1,15 +1,19 @@
 modded class BaseBuildingBase extends ItemBase
 {
-	protected TerritoryFlag m_Flag;
+	ref CFTLink m_Link = new CFTLink;
 	private bool m_AlarmLocked = false;
 
+	void CheckLink()
+	{
+		m_Link.CheckLink(GetPosition(), this);
+	}
+	
 	override void EEInit()
 	{
 		super.EEInit();
-
-		FindFlag();
+		CheckLink();
 	}
-	
+
 	override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef)
 	{		
 		super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
@@ -23,98 +27,37 @@ modded class BaseBuildingBase extends ItemBase
 		if (GetGame().IsClient())
 			return;
 		
-		FindFlag();
-
 		PlayerBase playerSource;
 		if ( source.IsPlayer() )// Fists
 			playerSource = PlayerBase.Cast( source );
 		else
 			playerSource = PlayerBase.Cast( source.GetHierarchyParent() );
 		
-		if (IsTerritoryMember(playerSource))
+		if (m_Link.IsTerritoryMember(playerSource))
 			return;
 
 		float damage = damageResult.GetHighestDamage("");
-		string alert = "";
-		alert += "**Hit By**:" + dmgType + " (" + damage + " hp)\\n";		
-		if (m_Flag)
-			m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.HIT_BY, alert, damage);
+		m_Link.SendAlert(CFTDAMAGE.DAMAGE, "**Hit By**:" + dmgType + " (" + damage + " hp)", damage);
 	}
 
-	// override void OnPartDestroyedServer( Man player, string part_name, int action_id, bool destroyed_by_connected_part = false )
-	// {
-	// 	super.OnPartDestroyedServer( player, part_name, action_id, destroyed_by_connected_part );
+	override void OnPartDestroyedServer( Man player, string part_name, int action_id, bool destroyed_by_connected_part = false )
+	{
+		super.OnPartDestroyedServer( player, part_name, action_id, destroyed_by_connected_part );
 		
-	// 	if (IsTerritoryMember(PlayerBase.Cast(player)))
-	// 		return;
+		if (m_Link.IsTerritoryMember(PlayerBase.Cast(player)))
+			return;
 
-	// 	string alert = "";
-	// 	alert += "**Destroyed**:" + part_name + "\\n";
-	// 	if (m_Flag)
-	// 		m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.DESTROY, alert, 0);
-	// }
+		m_Link.SendAlert(CFTDAMAGE.DESTROY, "**Destroyed**:" + part_name, 0);
+	}
 
 	override void OnPartDismantledServer(notnull Man player, string part_name, int action_id)
 	{
 		super.OnPartDismantledServer(player, part_name, action_id);
 
-		FindFlag();
-
-		if (IsTerritoryMember(PlayerBase.Cast(player)))
+		if (m_Link.IsTerritoryMember(PlayerBase.Cast(player)))
 			return;
 
-		string alert = "";
-		alert += "**Dismantled**:" + part_name + "\\n";
-		if (m_Flag)
-			m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.DISMANTLE, alert, 0);
+		m_Link.SendAlert(CFTDAMAGE.DISMANTLE, "**Dismantled**:" + part_name, 0);
 	}
 
-	bool SetTerritory(TerritoryFlag p_flag)
-	{
-		if (!p_flag)
-			return false;
-
-		if (!m_Flag)
-		{
-			m_Flag = TerritoryFlag.Cast(p_flag);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool IsTerritoryMember(PlayerBase player)
-	{
-		if (!m_Flag)
-			return false;
-
-		PlayerIdentity ident = PlayerIdentity.Cast(player.GetIdentity());
-		if (m_Flag.IsTerritoryMember(ident.GetId()))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	void FindFlag()
-	{
-		if (!m_Flag)
-			return; 
-
-		array<Object> objects = new array<Object>;
-        array<CargoBase> proxyCargos = new array<CargoBase>;
-
-        GetGame().GetObjectsAtPosition(GetPosition(), GameConstants.REFRESHER_RADIUS, objects, proxyCargos);
-
-        TerritoryFlag flag;
-        for (int i = 0; i < objects.Count(); i++)
-        {
-            if (Class.CastTo(flag, objects.Get(i)))
-            {
-                SetTerritory(flag);
-				break;
-            }
-        }
-	}
 }

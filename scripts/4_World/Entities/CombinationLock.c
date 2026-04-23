@@ -1,55 +1,30 @@
 modded class CombinationLock extends ItemBase
 {
-    protected TerritoryFlag m_Flag;
+    ref CFTLink m_Link = new CFTLink;
+
+    void CheckLink()
+    {
+        if (IsLockAttached())
+        {
+            m_Link.CheckLink(GetPosition(), this);
+        }
+    }
+
+    override void LockServer( EntityAI parent, bool ignore_combination = false )
+    {
+        super.LockServer(parent, ignore_combination);
+        m_Link.ResetLink();
+        CheckLink();
+    }
 
     override void UnlockServer( EntityAI player, EntityAI parent )
     {
         super.UnlockServer(player, parent);
 
-        FindFlag();
-
         PlayerBase playerSource = PlayerBase.Cast(player);
-        PlayerIdentity ident = PlayerIdentity.Cast(playerSource.GetIdentity());
-        if(m_Flag.IsTerritoryMember(ident.GetId()))
+        if(m_Link.IsTerritoryMember(playerSource))
             return;
 
-        string alert = "";
-        alert += "**Combination**: Unlocked\\n";
-        m_Flag.GetTerritoryWebhook().SendAlert(CFTDAMAGE.UNLOCK, alert, 0);
+        m_Link.SendAlert(CFTDAMAGE.UNLOCK, "**Combination**: Unlocked", 0);
     }
-
-    bool SetTerritory(TerritoryFlag p_flag)
-	{
-		if (!p_flag)
-			return false;
-
-		if (!m_Flag)
-		{
-			m_Flag = TerritoryFlag.Cast(p_flag);
-			return true;
-		}
-
-		return false;
-	}
-
-    void FindFlag()
-	{
-        if (!m_Flag)
-            return;
-
-		array<Object> objects = new array<Object>;
-        array<CargoBase> proxyCargos = new array<CargoBase>;
-
-        GetGame().GetObjectsAtPosition(GetPosition(), GameConstants.REFRESHER_RADIUS, objects, proxyCargos);
-
-        TerritoryFlag flag;
-        for (int i = 0; i < objects.Count(); i++)
-        {
-            if (Class.CastTo(flag, objects.Get(i)))
-            {
-                SetTerritory(flag);
-				break;
-            }
-        }
-	}
 }

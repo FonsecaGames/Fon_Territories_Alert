@@ -3,11 +3,13 @@ modded class TerritoryFlag extends BaseBuildingBase
     protected bool m_CanAddWebhook = true;
     protected ref CFTWebhook m_TWebhook = new CFTWebhook;
 
-    static int m_LastObjectsTerritory = 0;
+    private float m_LastSycnTerritory = 0;
     
     void TerritoryFlag()
     {
         RegisterNetSyncVariableBool("m_CanAddWebhook");
+
+        GetDayZGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(SyncItensInTerritory, GetDayZGame().GetTerritoriesAlertConfig().GetIntervalRefreshLink() * 1000, true);
     }
 
     bool CanAddWebhook()
@@ -100,35 +102,6 @@ modded class TerritoryFlag extends BaseBuildingBase
         }
     }
 
-    override void EEInit()
-    {
-        super.EEInit();
-
-        if (GetGame().IsServer())
-        {
-            // SetBaseBuildingInTerritory();
-        }
-    }
-
-    override void OnCEUpdate()
-    {
-        super.OnCEUpdate();
-        // SetBaseBuildingInTerritory();
-    }
-
-    bool CheckObjectInTerritory(vector p_pos)
-    {
-        if (GetGame().IsClient())
-            return false;
-
-        if (vector.Distance(GetPosition(), p_pos) <= GameConstants.REFRESHER_RADIUS)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     // =====================================================
     // RPC HANDLER
     // =====================================================
@@ -142,8 +115,7 @@ modded class TerritoryFlag extends BaseBuildingBase
         if (rpc_type == CFTRPCs.TERRITORY_WEBHOOK_SEND && GetGame().IsServer())
         {
             if (ctx.Read(webhookData))
-            {              
-                CFTLog("OnRPC [SERVER] WEBHOOK_SEND from client:"+webhookData.param1);
+            {
                 if (webhookData.param2 == string.Empty)
                 {
                     InternalRemoveWebhook();
@@ -159,7 +131,6 @@ modded class TerritoryFlag extends BaseBuildingBase
         // C->S
         if ((rpc_type == CFTRPCs.TERRITORY_WEBHOOK_REQUEST) && GetGame().IsServer())
         {
-            CFTLog("OnRPC [SERVER] WEBHOOK_REQUEST from client");
             ForceSync(sender);
         }
 
@@ -168,7 +139,6 @@ modded class TerritoryFlag extends BaseBuildingBase
         {
             if (ctx.Read(webhookData))
             {
-                CFTLog("OnRPC [CLIENT] WEBHOOK_SEND from server:" + webhookData.param1);
                 if (webhookData.param1 == string.Empty)
                 {
                     InternalRemoveWebhook();
@@ -209,49 +179,43 @@ modded class TerritoryFlag extends BaseBuildingBase
         m_CanAddWebhook = m_TWebhook.RemoveWebhook();
     }
 
-    private void SetBaseBuildingInTerritory()
+    private void SyncItensInTerritory()
     {
         if (GetGame().IsClient())
             return;
-
-        int curTime = GetGame().GetTime();
-     
-        if (m_LastObjectsTerritory > curTime)
-            return;
-        
-        m_LastObjectsTerritory = curTime + 5000;
 
         array<Object> objects = new array<Object>;
         array<CargoBase> proxyCargos = new array<CargoBase>;
 
         GetGame().GetObjectsAtPosition(GetPosition(), GameConstants.REFRESHER_RADIUS, objects, proxyCargos);
-
+        // CFTLog("SyncItensInTerritory");
         BaseBuildingBase theBase;
         for (int i = 0; i < objects.Count(); i++)
         {
             if (Class.CastTo(theBase, objects.Get(i)))
             {
-                theBase.SetTerritory(this);
+                theBase.CheckLink();
 
-                // // Check for CodeLock attached
-                // #ifdef CodeLock
-                // CodeLock theCodeLock = CodeLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
-                // if (theCodeLock)
-                // {
-                //     theCodeLock.SetTerritory(this);
-                //     continue;
-                // }
-                // #endif
+                // Check for CodeLock attached
+                #ifdef CodeLock
+                CodeLock theCodeLock = CodeLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
+                if (theCodeLock)
+                {
+                    theCodeLock.CheckLink();
+                    continue;
+                }
+                #endif
                 
-                // // Check CombinationLock
-                // CombinationLock theCombLock = CombinationLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
-                // if (theCombLock)
-                // {
-                //     theCombLock.SetTerritory(this);
-                //     continue
-                // }
+                // Check CombinationLock
+                CombinationLock theCombLock = CombinationLock.Cast( theBase.FindAttachmentBySlotName( "Att_CombinationLock" ) );
+                if (theCombLock)
+                {
+                    theCombLock.CheckLink();
+                    continue
+                }
                 
             }
         }
+        // CFTLog("SyncItensInTerritory end");
     }
 }

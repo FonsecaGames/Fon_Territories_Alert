@@ -83,16 +83,29 @@ class CFTWebhook
     void SendAlert(CFTDAMAGE p_type, string msg, float dmg = 0)
     {
         if ((p_type == CFTDAMAGE.UNLOCK) && (GetDayZGame().GetTerritoriesAlertConfig().CanNotifyUnlock() == false))
+        {
+            Log("[DISCARD]" + msg);
             return ;
+        }
+        else if ((p_type == CFTDAMAGE.DAMAGE) && (GetDayZGame().GetTerritoriesAlertConfig().CanNotifyDamage() == false))
+        {
+            Log("[DISCARD]" + msg);
+            return ;
+        }
+        else if ((p_type == CFTDAMAGE.DISMANTLE) && (GetDayZGame().GetTerritoriesAlertConfig().CanNotifyDismantle() == false))
+        {
+            Log("[DISCARD]" + msg);
+            return ;
+        }
 
         if (m_LockedHook)
         {
-            AddDamageHistory(p_type, msg, dmg);
+            AddDamageHistory(p_type, msg + "\\n", dmg);
         }
         else
         {
             Log(msg);
-            SendRaidAlert(msg);
+            SendRaidAlert(msg + "\\n");
             LockHook();
         }
     }

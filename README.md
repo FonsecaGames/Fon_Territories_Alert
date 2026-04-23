@@ -8,11 +8,15 @@ When a territory is attacked, dismantled, unlocked, or damaged, this mod sends s
 
 - Per-territory Discord webhook configuration through in-game UI.
 - Webhook is stored with the territory flag and persisted across restarts.
+- Automatic item-to-territory linking via `CFTLink` (building parts and locks).
+- Periodic territory resync for linked objects and lock attachments.
 - Alert events include:
   - Building hit (combat, firearm, explosion, custom)
+  - Building part destroyed
   - Building part dismantled
   - Combination lock and codelock damage/destroy
   - Lock unlock event (optional)
+- Member filtering option to alert only when attacker is not from the same territory.
 - Anti-spam overload handling:
   - Buffers repeated alerts during cooldown.
   - Sends a merged summary with accumulated damage.
@@ -26,11 +30,19 @@ When a territory is attacked, dismantled, unlocked, or damaged, this mod sends s
 
 ## Installation
 
-1. Build/sign the mod package with your existing build pipeline.
-2. Deploy the generated PBO(s) to your server mod folder.
-3. Add the mod to server startup parameters.
-4. Ensure ZenTerritories is loaded before this mod.
-5. Start the server once to generate the config file.
+1. Copy the mod folder (example: `@CFTerritoriesAlert`) to your DayZ server root.
+2. Copy the `.bikey` file to the server `keys` folder.
+3. Add the mod in the server startup parameter `-mod`, keeping `ZenTerritories` before this mod.
+4. Restart the server and confirm both mods are loaded in the startup log.
+5. After first boot, check generated config at `$profile:\CFTerritoriesAlert\AlertsConfig.json`.
+
+Example startup parameters:
+
+```bat
+-mod=@ZenTerritories;@CFTerritoriesAlert
+```
+
+If you use a launcher/panel, add the same mods in this order in the server mod list.
 
 ## Configuration
 
@@ -46,9 +58,12 @@ Example config:
 {
   "IntervalInOverload": 60,
   "MaxHistoryOverload": 5,
-  "IntervalCheckTerritoryObjects": 60,
+  "IntervalRefreshLink": 60,
   "MinimumDamageNotify": 0,
   "NotifyUnlock": true,
+  "NotifyDamage": true,
+  "NotifyDismantle": true,
+  "OnlyNonMembers": true,
   "LogAlerts": false
 }
 ```
@@ -57,9 +72,12 @@ Example config:
 
 - IntervalInOverload: Seconds to wait before sending the next alert batch when spam is detected.
 - MaxHistoryOverload: Maximum number of buffered messages kept during overload.
-- IntervalCheckTerritoryObjects: Interval (seconds) for territory scan and object assignment.
+- IntervalRefreshLink: Seconds between periodic territory link refresh (minimum enforced: 10 seconds).
 - MinimumDamageNotify: Minimum damage threshold for notifications.
 - NotifyUnlock: Enables/disables unlock notifications.
+- NotifyDamage: Enables/disables damage notifications for structures and locks.
+- NotifyDismantle: Enables/disables dismantle notifications.
+- OnlyNonMembers: If true, only non-members trigger alerts.
 - LogAlerts: Writes alert messages to profile logs for debugging.
 
 ## In-Game Usage
