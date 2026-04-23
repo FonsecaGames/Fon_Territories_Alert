@@ -108,7 +108,11 @@ Alerts are sent as Discord embeds using REST POST requests to the configured web
 ## Credits
 
 - Author: [Fonseca](https://steamcommunity.com/profiles/76561198172055119/)
-- Mod: Territories Alert
+- Mod: [Basic Territories Alert](https://steamcommunity.com/sharedfiles/filedetails/?id=3712735166)
+
+## Support me
+Consider a donation if you are liking this mod
+[PayPal](https://www.paypal.com/donate/?hosted_button_id=SNRA7FRFUVWVW)
 
 ## Repack
 
