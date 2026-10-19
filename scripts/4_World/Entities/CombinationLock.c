@@ -17,9 +17,9 @@ modded class CombinationLock extends ItemBase
         CheckLink();
     }
 
-    override void UnlockServer( EntityAI player, EntityAI parent )
+    override void UnlockOnServer(EntityAI player, EntityAI parent, bool isInsideLock = false)
     {
-        super.UnlockServer(player, parent);
+        super.UnlockOnServer(player, parent, isInsideLock);
 
         PlayerBase playerSource = PlayerBase.Cast(player);
         if(m_Link.IsTerritoryMember(playerSource))
